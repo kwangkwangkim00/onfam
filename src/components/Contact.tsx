@@ -2,9 +2,9 @@ import { useState, type FormEvent } from "react";
 import { PlaySquare, Newspaper, Camera, Link2, Mail, AtSign, CheckCircle2 } from "lucide-react";
 import SectionReveal from "./SectionReveal";
 
-// 폼 제출은 Formspree(https://formspree.io)로 갑니다. 무료 가입 후 발급받은
-// Form ID를 .env 파일에 VITE_FORMSPREE_ID=xxxxxxxx 로 넣어주세요.
-const FORMSPREE_ID = import.meta.env.VITE_FORMSPREE_ID as string | undefined;
+// 폼 제출은 Google Apps Script 웹 앱으로 갑니다. 배포한 웹 앱 URL을
+// .env 파일에 VITE_APPS_SCRIPT_URL=https://script.google.com/... 로 넣어주세요.
+const APPS_SCRIPT_URL = import.meta.env.VITE_APPS_SCRIPT_URL as string | undefined;
 
 const EMAIL = "ejrfla21@kakao.com";
 
@@ -54,24 +54,22 @@ export default function Contact() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!FORMSPREE_ID) {
+    if (!APPS_SCRIPT_URL) {
       setStatus("error");
       return;
     }
     setStatus("sending");
     const form = e.currentTarget;
     try {
-      const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+      // Apps Script 웹 앱은 CORS 응답 헤더를 안 붙여줘서 no-cors로 보내고,
+      // 네트워크 에러만 없으면 성공으로 간주합니다(응답 본문은 읽을 수 없음).
+      await fetch(APPS_SCRIPT_URL, {
         method: "POST",
-        headers: { Accept: "application/json" },
+        mode: "no-cors",
         body: new FormData(form),
       });
-      if (res.ok) {
-        setStatus("sent");
-        form.reset();
-      } else {
-        setStatus("error");
-      }
+      setStatus("sent");
+      form.reset();
     } catch {
       setStatus("error");
     }
@@ -167,7 +165,7 @@ export default function Contact() {
 
                   {status === "error" && (
                     <p className="text-xs font-medium text-terracotta-deep">
-                      {FORMSPREE_ID
+                      {APPS_SCRIPT_URL
                         ? "전송에 실패했어요. 잠시 후 다시 시도해주세요."
                         : "문의 폼이 아직 연결되지 않았습니다. 관리자에게 문의해주세요."}
                     </p>
