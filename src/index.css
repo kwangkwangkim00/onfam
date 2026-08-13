@@ -1,0 +1,63 @@
+@import "tailwindcss";
+@import "pretendard/dist/web/static/pretendard-dynamic-subset.css";
+
+@theme {
+  --font-sans: Pretendard, -apple-system, sans-serif;
+
+  --color-ivory: #fbf6ee;
+  --color-ivory-deep: #f2e8d9;
+  --color-terracotta: #c4744c;
+  --color-terracotta-deep: #a25a37;
+  --color-clay: #e3b190;
+  --color-gold: #cf9d5f;
+  --color-ink: #2c231b;
+  --color-ink-soft: #6f6053;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--color-ivory);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--color-terracotta);
+  color: var(--color-ivory);
+}
+
+.glass-card {
+  background: color-mix(in srgb, var(--color-ivory) 72%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid color-mix(in srgb, white 60%, transparent);
+  box-shadow: 0 20px 44px -24px rgba(76, 47, 24, 0.35);
+}
+
+.hairline {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--color-gold) 55%, transparent),
+    transparent
+  );
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

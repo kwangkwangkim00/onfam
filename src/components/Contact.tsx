@@ -1,0 +1,213 @@
+import { useState, type FormEvent } from "react";
+import { PlaySquare, Newspaper, Camera, Link2, Mail, AtSign, CheckCircle2 } from "lucide-react";
+import SectionReveal from "./SectionReveal";
+
+// 폼 제출은 Formspree(https://formspree.io)로 갑니다. 무료 가입 후 발급받은
+// Form ID를 .env 파일에 VITE_FORMSPREE_ID=xxxxxxxx 로 넣어주세요.
+const FORMSPREE_ID = import.meta.env.VITE_FORMSPREE_ID as string | undefined;
+
+const EMAIL = "ejrfla21@kakao.com";
+
+const CHANNELS = [
+  {
+    icon: Newspaper,
+    label: "블로그",
+    href: "https://blog.naver.com/duckkonni",
+  },
+  {
+    icon: Camera,
+    label: "인스타그램",
+    href: "https://www.instagram.com/duck.onni",
+  },
+  {
+    icon: PlaySquare,
+    label: "유튜브",
+    href: "https://youtube.com/@tv-im7so",
+  },
+  {
+    icon: AtSign,
+    label: "쓰레드",
+    href: "https://www.threads.com/@duck.onni",
+  },
+  {
+    icon: Link2,
+    label: "링크트리",
+    href: "https://linktr.ee/oncoaching",
+  },
+];
+
+type Status = "idle" | "sending" | "sent" | "error";
+
+export default function Contact() {
+  const [status, setStatus] = useState<Status>("idle");
+  const [emailCopied, setEmailCopied] = useState(false);
+
+  const handleCopyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(EMAIL);
+    } catch {
+      // ignore
+    }
+    setEmailCopied(true);
+    setTimeout(() => setEmailCopied(false), 2000);
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!FORMSPREE_ID) {
+      setStatus("error");
+      return;
+    }
+    setStatus("sending");
+    const form = e.currentTarget;
+    try {
+      const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: new FormData(form),
+      });
+      if (res.ok) {
+        setStatus("sent");
+        form.reset();
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  return (
+    <section id="contact" className="py-16 md:py-20">
+      <div className="mx-auto max-w-5xl px-6">
+        <div className="grid items-stretch gap-6 md:grid-cols-[1fr_1.3fr]">
+          <div className="flex flex-col gap-6">
+            <SectionReveal>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta-deep">
+                섭외 · 문의
+              </p>
+              <h2 className="mt-3 text-balance text-3xl font-bold text-ink md:text-4xl">
+                언제든 편하게 문의하세요
+              </h2>
+              <p className="mt-3 text-pretty break-keep text-sm text-ink-soft md:text-base">
+                기관·기업의 교육 목적과 대상에 맞춰
+                <br />
+                커리큘럼을 함께 설계해 드립니다.
+              </p>
+            </SectionReveal>
+
+            <SectionReveal delay={0.1} className="flex-1">
+              <div className="glass-card flex h-full flex-col justify-center rounded-3xl p-8">
+                <h3 className="text-base font-bold text-ink">온라인에서도 만나요</h3>
+                <div className="mt-5 flex flex-wrap gap-2.5">
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={handleCopyEmail}
+                      className="group flex items-center gap-2.5 rounded-full bg-ivory/70 py-2.5 pl-2.5 pr-4 transition-all hover:-translate-y-0.5 hover:bg-ivory"
+                    >
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-terracotta/12 text-terracotta-deep transition-colors group-hover:bg-terracotta group-hover:text-ivory">
+                        <Mail size={14} strokeWidth={2.2} />
+                      </span>
+                      <span className="text-sm font-bold text-ink">이메일</span>
+                    </button>
+                    {emailCopied && (
+                      <span className="absolute left-1/2 top-full z-10 mt-2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-ink px-3 py-1.5 text-xs font-medium text-ivory shadow-lg">
+                        이메일 주소가 복사되었습니다
+                      </span>
+                    )}
+                  </div>
+
+                  {CHANNELS.map(({ icon: Icon, label, href }) => (
+                    <a
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center gap-2.5 rounded-full bg-ivory/70 py-2.5 pl-2.5 pr-4 transition-all hover:-translate-y-0.5 hover:bg-ivory"
+                    >
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-terracotta/12 text-terracotta-deep transition-colors group-hover:bg-terracotta group-hover:text-ivory">
+                        <Icon size={14} strokeWidth={2.2} />
+                      </span>
+                      <span className="text-sm font-bold text-ink">{label}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </SectionReveal>
+          </div>
+
+          <SectionReveal delay={0.15}>
+            <form onSubmit={handleSubmit} className="glass-card h-full rounded-3xl p-8">
+              {status === "sent" ? (
+                <div className="flex h-full min-h-72 flex-col items-center justify-center gap-3 text-center">
+                  <CheckCircle2 size={38} className="text-terracotta-deep" />
+                  <p className="font-bold text-ink">문의가 접수되었습니다</p>
+                  <p className="text-sm text-ink-soft">빠른 시일 내에 회신드리겠습니다.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <Field label="이름" name="name" required />
+                    <Field label="소속 기관" name="organization" required />
+                  </div>
+                  <Field label="연락처 (이메일 또는 전화번호)" name="contact" required />
+                  <div>
+                    <label className="mb-1.5 block text-xs font-semibold text-ink-soft">
+                      문의 내용
+                    </label>
+                    <textarea
+                      name="message"
+                      required
+                      rows={4}
+                      className="w-full rounded-xl border border-ink/30 bg-ivory/70 px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-terracotta/50"
+                      placeholder="희망 교육 대상, 인원, 시기 등을 자유롭게 남겨주세요."
+                    />
+                  </div>
+
+                  {status === "error" && (
+                    <p className="text-xs font-medium text-terracotta-deep">
+                      {FORMSPREE_ID
+                        ? "전송에 실패했어요. 잠시 후 다시 시도해주세요."
+                        : "문의 폼이 아직 연결되지 않았습니다. 관리자에게 문의해주세요."}
+                    </p>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={status === "sending"}
+                    className="w-full rounded-full bg-terracotta px-6 py-3.5 text-sm font-semibold text-ivory shadow-[0_16px_32px_-14px_rgba(196,116,76,0.6)] transition-transform hover:scale-[1.01] hover:bg-terracotta-deep disabled:opacity-60"
+                  >
+                    {status === "sending" ? "전송 중..." : "상담 요청 보내기"}
+                  </button>
+                </div>
+              )}
+            </form>
+          </SectionReveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Field({
+  label,
+  name,
+  required,
+}: {
+  label: string;
+  name: string;
+  required?: boolean;
+}) {
+  return (
+    <div>
+      <label className="mb-1.5 block text-xs font-semibold text-ink-soft">{label}</label>
+      <input
+        type="text"
+        name={name}
+        required={required}
+        className="w-full rounded-xl border border-ink/30 bg-ivory/70 px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-terracotta/50"
+      />
+    </div>
+  );
+}
