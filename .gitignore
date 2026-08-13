@@ -11,6 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
 
 # 참고용 블로그 원문 스크랩 (사이트에는 미사용, 공개 저장소에 올릴 필요 없음)
 content-reference
