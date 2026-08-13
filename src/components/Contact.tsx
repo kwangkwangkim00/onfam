@@ -149,7 +149,10 @@ export default function Contact() {
                     <Field label="이름" name="name" required />
                     <Field label="소속 기관" name="organization" required />
                   </div>
-                  <Field label="연락처 (이메일 또는 전화번호)" name="contact" required />
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <Field label="전화번호" name="phone" type="tel" required />
+                    <Field label="이메일" name="email" type="email" required />
+                  </div>
                   <div>
                     <label className="mb-1.5 block text-xs font-semibold text-ink-soft">
                       문의 내용
@@ -176,7 +179,7 @@ export default function Contact() {
                     disabled={status === "sending"}
                     className="w-full rounded-full bg-terracotta px-6 py-3.5 text-sm font-semibold text-ivory shadow-[0_16px_32px_-14px_rgba(196,116,76,0.6)] transition-transform hover:scale-[1.01] hover:bg-terracotta-deep disabled:opacity-60"
                   >
-                    {status === "sending" ? "전송 중..." : "상담 요청 보내기"}
+                    {status === "sending" ? "전송 중..." : "문의하기"}
                   </button>
                 </div>
               )}
@@ -191,17 +194,19 @@ export default function Contact() {
 function Field({
   label,
   name,
+  type = "text",
   required,
 }: {
   label: string;
   name: string;
+  type?: string;
   required?: boolean;
 }) {
   return (
     <div>
       <label className="mb-1.5 block text-xs font-semibold text-ink-soft">{label}</label>
       <input
-        type="text"
+        type={type}
         name={name}
         required={required}
         className="w-full rounded-xl border border-ink/30 bg-ivory/70 px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-terracotta/50"

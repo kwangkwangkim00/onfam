@@ -71,17 +71,17 @@ export default function Hero() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.3 }}
-            className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row lg:justify-start"
+            className="mt-9 flex flex-row items-center justify-center gap-3 lg:justify-start"
           >
             <a
               href="#contact"
-              className="w-full rounded-full bg-terracotta px-7 py-3.5 text-sm font-semibold text-ivory shadow-[0_16px_32px_-14px_rgba(196,116,76,0.6)] transition-transform hover:scale-[1.03] hover:bg-terracotta-deep sm:w-auto"
+              className="rounded-full bg-terracotta px-5 py-3 text-sm font-semibold text-ivory shadow-[0_16px_32px_-14px_rgba(196,116,76,0.6)] transition-transform hover:scale-[1.03] hover:bg-terracotta-deep sm:px-7 sm:py-3.5"
             >
               강의 문의하기
             </a>
             <a
               href="#record"
-              className="w-full rounded-full border border-ink/15 bg-ivory/60 px-7 py-3.5 text-sm font-semibold text-ink backdrop-blur transition-colors hover:border-terracotta/40 hover:text-terracotta-deep sm:w-auto"
+              className="rounded-full border border-ink/15 bg-ivory/60 px-5 py-3 text-sm font-semibold text-ink backdrop-blur transition-colors hover:border-terracotta/40 hover:text-terracotta-deep sm:px-7 sm:py-3.5"
             >
               출강 이력 보기
             </a>

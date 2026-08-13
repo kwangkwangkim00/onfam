@@ -38,9 +38,9 @@ type Institution = {
 
 const RECORDS: Institution[] = [
   { org: "LG전자", logo: lgLogo },
-  { org: "서울가족학교", logo: familyseoulLogo },
-  { org: "EBS", logo: ebsLogo },
   { org: "현대엘리베이터", logo: hyundaiLogo },
+  { org: "EBS", logo: ebsLogo },
+  { org: "서울가족학교", logo: familyseoulLogo },
   { org: "한국주택금융공사", logo: hfLogo },
   { org: "서울주택도시공사", logo: shLogo },
   { org: "이마트 컬쳐클럽", logo: emartLogo },
