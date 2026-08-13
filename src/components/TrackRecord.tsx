@@ -28,7 +28,13 @@ import nadulmokLogo from "../assets/logos/nadulmok-church.png";
 // 아직 못 구한 기관은 이니셜 모노그램으로 표시합니다(logoUrl 추가 시 바로 교체 가능).
 // 서울북부교육청은 자체 로고를 못 찾아 상위기관인 서울특별시교육청 로고로 대신합니다.
 // 가족센터는 여러 자치구 중 주요 지역만 남겨 24곳으로 정리했습니다.
-type Institution = { org: string; logo?: string; mark?: string; invert?: boolean };
+type Institution = {
+  org: string;
+  logo?: string;
+  mark?: string;
+  invert?: boolean;
+  compact?: boolean;
+};
 
 const RECORDS: Institution[] = [
   { org: "LG전자", logo: lgLogo },
@@ -42,7 +48,7 @@ const RECORDS: Institution[] = [
   { org: "동서울대학교", logo: dsuLogo },
   { org: "시립보라매청소년센터", logo: boramaeLogo },
   { org: "서울광역청년센터", logo: smycLogo },
-  { org: "강원특별자치도 공무원교육원", logo: gangwonLogo, invert: true },
+  { org: "강원특별자치도 공무원교육원", logo: gangwonLogo, invert: true, compact: true },
   { org: "한국문화예술교육진흥원", logo: arteLogo },
   { org: "동작구청", logo: dongjakLogo },
   { org: "동작문화재단", logo: dongjakCultureLogo },
@@ -95,7 +101,13 @@ export default function TrackRecord() {
                     </span>
                   )}
                 </div>
-                <p className="text-xs font-bold leading-snug text-ink">{item.org}</p>
+                <p
+                  className={`font-bold leading-snug text-ink ${
+                    item.compact ? "whitespace-nowrap text-[10px]" : "text-xs"
+                  }`}
+                >
+                  {item.org}
+                </p>
               </div>
             </SectionReveal>
           ))}
