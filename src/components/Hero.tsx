@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
-import ProfilePhoto from "./ProfilePhoto";
+import PhotoCollage from "./PhotoCollage";
 
 const CREDENTIALS = [
   "서울가족학교 예비부부교실 위촉강사",
@@ -93,7 +93,7 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.35 }}
         >
-          <ProfilePhoto />
+          <PhotoCollage />
         </motion.div>
       </div>
 
