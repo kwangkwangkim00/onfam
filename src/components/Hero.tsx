@@ -26,6 +26,8 @@ const MOBILE_CREDENTIALS = [
   "EBS 지도강사",
   "가족 코칭 지도사",
   "상담심리사 1급",
+  "DISC 1급, MBTI, 에니어그램 강사 자격",
+  "부모교육지도자 1급",
 ];
 
 export default function Hero() {
@@ -123,11 +125,11 @@ export default function Hero() {
             </span>
           ))}
         </div>
-        <div className="flex flex-wrap items-center justify-center gap-2 border-t border-ink/10 pt-8 md:hidden">
+        <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5 border-t border-ink/10 pt-8 md:hidden">
           {MOBILE_CREDENTIALS.map((c) => (
             <span
               key={c}
-              className="rounded-full bg-ivory/70 px-3.5 py-1.5 text-xs font-medium text-ink-soft backdrop-blur"
+              className="rounded-full bg-ivory/70 px-3.5 py-1 text-xs font-medium text-ink-soft backdrop-blur"
             >
               {c}
             </span>
