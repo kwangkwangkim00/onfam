@@ -125,11 +125,11 @@ export default function Hero() {
             </span>
           ))}
         </div>
-        <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1.5 border-t border-ink/10 pt-8 md:hidden">
+        <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 border-t border-ink/10 pt-8 md:hidden">
           {MOBILE_CREDENTIALS.map((c) => (
             <span
               key={c}
-              className="rounded-full bg-ivory/70 px-3.5 py-1 text-xs font-medium text-ink-soft backdrop-blur"
+              className="rounded-full bg-ivory/70 px-3.5 py-0.5 text-xs font-medium text-ink-soft backdrop-blur"
             >
               {c}
             </span>
