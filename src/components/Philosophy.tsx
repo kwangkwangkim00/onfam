@@ -1,7 +1,13 @@
 import { Heart, HeartHandshake, MessagesSquare, Globe, Compass, Building2 } from "lucide-react";
 import SectionReveal from "./SectionReveal";
 
-const TOPICS = [
+// href를 넣으면 카드를 클릭했을 때 해당 후기 블로그 글로 연결됩니다.
+const TOPICS: {
+  icon: typeof Heart;
+  title: string;
+  desc: string;
+  href?: string;
+}[] = [
   {
     icon: Heart,
     title: "예비부부·신혼부부교육",
@@ -49,19 +55,34 @@ export default function Philosophy() {
         </SectionReveal>
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {TOPICS.map((topic, i) => (
-            <SectionReveal key={topic.title} delay={i * 0.06}>
-              <div className="glass-card h-full rounded-3xl p-6">
-                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-terracotta/12 text-terracotta-deep">
-                  <topic.icon size={20} strokeWidth={2} />
-                </span>
-                <h3 className="mt-4 text-base font-bold text-ink break-keep">{topic.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink-soft break-keep">
-                  {topic.desc}
-                </p>
-              </div>
-            </SectionReveal>
-          ))}
+          {TOPICS.map((topic, i) => {
+            const Card = topic.href ? "a" : "div";
+            return (
+              <SectionReveal key={topic.title} delay={i * 0.06}>
+                <Card
+                  {...(topic.href
+                    ? { href: topic.href, target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
+                  className={`glass-card group flex h-full flex-col rounded-3xl p-6 ${
+                    topic.href ? "transition-transform hover:-translate-y-1" : ""
+                  }`}
+                >
+                  <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-terracotta/12 text-terracotta-deep">
+                    <topic.icon size={20} strokeWidth={2} />
+                  </span>
+                  <h3 className="mt-4 text-base font-bold text-ink break-keep">{topic.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-soft break-keep">
+                    {topic.desc}
+                  </p>
+                  {topic.href && (
+                    <span className="mt-4 text-sm font-semibold text-terracotta-deep transition-colors group-hover:text-terracotta">
+                      후기 보러가기 →
+                    </span>
+                  )}
+                </Card>
+              </SectionReveal>
+            );
+          })}
         </div>
       </div>
     </section>

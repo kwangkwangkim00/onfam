@@ -18,6 +18,16 @@ const CREDENTIALS = [
   "환경교육사 3급",
 ];
 
+// 모바일은 화면이 좁아 13개를 다 나열하면 너무 길어지므로, 핵심만 추립니다.
+const MOBILE_CREDENTIALS = [
+  "서울가족학교 예비부부교실 위촉강사",
+  "KAC(Korea Associate Coach) 인증코치",
+  "결혼식보다 중요한 결혼생활 준비 저서",
+  "EBS 지도강사",
+  "가족 코칭 지도사",
+  "상담심리사 1급",
+];
+
 export default function Hero() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
@@ -103,8 +113,18 @@ export default function Hero() {
         transition={{ duration: 0.7, delay: 0.45 }}
         className="relative mx-auto mt-16 max-w-7xl px-6"
       >
-        <div className="flex flex-wrap items-center justify-center gap-2 border-t border-ink/10 pt-8">
+        <div className="hidden flex-wrap items-center justify-center gap-2 border-t border-ink/10 pt-8 md:flex">
           {CREDENTIALS.map((c) => (
+            <span
+              key={c}
+              className="rounded-full bg-ivory/70 px-3.5 py-1.5 text-xs font-medium text-ink-soft backdrop-blur"
+            >
+              {c}
+            </span>
+          ))}
+        </div>
+        <div className="flex flex-wrap items-center justify-center gap-2 border-t border-ink/10 pt-8 md:hidden">
+          {MOBILE_CREDENTIALS.map((c) => (
             <span
               key={c}
               className="rounded-full bg-ivory/70 px-3.5 py-1.5 text-xs font-medium text-ink-soft backdrop-blur"

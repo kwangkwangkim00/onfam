@@ -43,8 +43,19 @@ const BASE_INTERVAL_MS = 3800;
 export default function PhotoShowcase() {
   const [index, setIndex] = useState(0);
   const timeoutRef = useRef<number | undefined>(undefined);
+  const isFirstPaintRef = useRef(true);
+
+  // 모든 사진을 미리 내려받아둬서, 전환될 때 디코딩 때문에 끊기지 않게 합니다.
+  useEffect(() => {
+    PHOTOS.forEach((p) => {
+      const img = new window.Image();
+      img.src = p.url;
+    });
+  }, []);
 
   useEffect(() => {
+    isFirstPaintRef.current = false;
+
     if (PHOTOS.length < 2) return;
 
     const scheduleNext = () => {
@@ -72,18 +83,26 @@ export default function PhotoShowcase() {
     };
   }, [index]);
 
+  const goToNext = () => setIndex((i) => (i + 1) % PHOTOS.length);
+
   const current = PHOTOS[index];
 
   return (
     <div className="mx-auto w-full max-w-xs sm:max-w-sm">
-      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl shadow-[0_20px_44px_-20px_rgba(76,47,24,0.4)]">
+      <button
+        type="button"
+        onClick={goToNext}
+        disabled={PHOTOS.length < 2}
+        aria-label="다음 사진 보기"
+        className="relative block aspect-[4/5] w-full overflow-hidden rounded-3xl shadow-[0_20px_44px_-20px_rgba(76,47,24,0.4)]"
+      >
         {current ? (
           <AnimatePresence mode="sync">
             <motion.img
               key={current.url}
               src={current.url}
               alt={current.alt}
-              initial={{ opacity: 0, scale: 1.04 }}
+              initial={isFirstPaintRef.current ? false : { opacity: 0, scale: 1.04 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
               transition={{
@@ -98,17 +117,24 @@ export default function PhotoShowcase() {
             사진 준비중입니다
           </div>
         )}
-      </div>
+      </button>
 
       {PHOTOS.length > 1 && (
         <div className="mt-4 flex items-center justify-center gap-1.5">
           {PHOTOS.map((p, i) => (
-            <span
+            <button
               key={p.url}
-              className={`h-1.5 rounded-full transition-all ${
-                i === index ? "w-5 bg-terracotta" : "w-1.5 bg-ink/15"
-              }`}
-            />
+              type="button"
+              onClick={() => setIndex(i)}
+              aria-label={`${i + 1}번째 사진 보기`}
+              className="p-1"
+            >
+              <span
+                className={`block h-1.5 rounded-full transition-all ${
+                  i === index ? "w-5 bg-terracotta" : "w-1.5 bg-ink/15"
+                }`}
+              />
+            </button>
           ))}
         </div>
       )}
