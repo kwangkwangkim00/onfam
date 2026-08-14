@@ -224,7 +224,7 @@ export default function Testimonials() {
           <h2 className="mt-3 text-balance text-3xl font-bold text-ink md:text-4xl">
             함께한 분들의 이야기
           </h2>
-          <p className="mt-2 text-sm text-ink-soft">
+          <p className="mt-2 whitespace-nowrap text-[11px] text-ink-soft sm:text-sm">
             실제로 함께한 기업과 기관, 참여자들이 전해주신 이야기입니다.
           </p>
         </SectionReveal>
