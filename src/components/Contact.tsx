@@ -80,7 +80,7 @@ export default function Contact() {
       <div className="mx-auto max-w-5xl px-6">
         <div className="grid items-stretch gap-6 md:grid-cols-[1fr_1.3fr]">
           <div className="flex flex-col gap-6">
-            <SectionReveal className="text-center md:text-left">
+            <SectionReveal className="text-center md:pl-4 md:text-left">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta-deep">
                 강연 · 코칭 · 교육
               </p>

@@ -140,12 +140,18 @@ const AUTO_SPEED_PX_PER_MS = 0.09; // 카드 한 장이 약 4초에 지나가는
 const RESUME_DELAY_MS = 1800;
 
 export default function Testimonials() {
+  // scrollLeft는 브라우저가 정수 픽셀로 반올림해서 저속 연속 이동에는 미세한
+  // 떨림이 생깁니다. 그래서 네이티브 스크롤 대신, 안쪽 래퍼를 소수점 단위로
+  // translate3d 이동시키는 방식으로 그립니다(트랜스폼은 반올림 없이 매끄럽습니다).
+  const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(false);
   const resumeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const drag = useRef<{ startX: number; startScroll: number; dragging: boolean }>({
+  const posRef = useRef(0);
+  const targetRef = useRef<number | null>(null);
+  const drag = useRef<{ startX: number; startPos: number; dragging: boolean }>({
     startX: 0,
-    startScroll: 0,
+    startPos: 0,
     dragging: false,
   });
 
@@ -158,32 +164,35 @@ export default function Testimonials() {
   };
 
   useEffect(() => {
-    const el = trackRef.current;
-    if (!el) return;
+    const track = trackRef.current;
+    if (!track) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     let raf = 0;
     let last = performance.now();
-    // 브라우저가 scrollLeft를 정수 픽셀로 반올림해버려서, 매 프레임 그 값을
-    // 다시 읽어 더하면 소수점 이동량이 씹히며 흔들려 보입니다. 그래서 실제
-    // 위치는 이 소수점 변수로만 추적하고, 화면에는 결과만 반영합니다.
-    let virtualLeft = el.scrollLeft;
 
     const tick = (now: number) => {
       const dt = now - last;
       last = now;
-      if (!pausedRef.current && !drag.current.dragging) {
-        const setWidth = el.scrollWidth / 2;
-        virtualLeft += AUTO_SPEED_PX_PER_MS * dt;
-        if (virtualLeft >= setWidth) {
-          virtualLeft -= setWidth;
+      const setWidth = track.scrollWidth / 2;
+
+      if (targetRef.current !== null) {
+        // 화살표 버튼을 누르면 목표 지점까지 부드럽게 다가갑니다.
+        const diff = targetRef.current - posRef.current;
+        if (Math.abs(diff) < 0.5) {
+          posRef.current = targetRef.current;
+          targetRef.current = null;
+        } else {
+          posRef.current += diff * Math.min(1, dt / 180);
         }
-        el.scrollLeft = virtualLeft;
-      } else {
-        // 드래그/일시정지 중 사용자가 위치를 바꿨을 수 있으니 동기화해서,
-        // 자동 재생이 다시 시작될 때 갑자기 튀지 않게 합니다.
-        virtualLeft = el.scrollLeft;
+      } else if (!pausedRef.current && !drag.current.dragging) {
+        posRef.current += AUTO_SPEED_PX_PER_MS * dt;
       }
+
+      if (posRef.current >= setWidth) posRef.current -= setWidth;
+      if (posRef.current < 0) posRef.current += setWidth;
+
+      track.style.transform = `translate3d(${-posRef.current}px,0,0)`;
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -191,31 +200,28 @@ export default function Testimonials() {
   }, []);
 
   const scroll = (dir: 1 | -1) => {
-    trackRef.current?.scrollBy({ left: dir * 260, behavior: "smooth" });
+    targetRef.current = posRef.current + dir * 260;
     pauseFor(RESUME_DELAY_MS);
   };
 
   const onWheel = (e: React.WheelEvent) => {
-    const el = trackRef.current;
-    if (!el) return;
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-      el.scrollLeft += e.deltaY;
+      posRef.current += e.deltaY;
+      targetRef.current = null;
       e.preventDefault();
       pauseFor(RESUME_DELAY_MS);
     }
   };
 
   const onPointerDown = (e: React.PointerEvent) => {
-    const el = trackRef.current;
-    if (!el) return;
-    drag.current = { startX: e.clientX, startScroll: el.scrollLeft, dragging: true };
-    el.setPointerCapture(e.pointerId);
+    drag.current = { startX: e.clientX, startPos: posRef.current, dragging: true };
+    containerRef.current?.setPointerCapture(e.pointerId);
+    targetRef.current = null;
     pausedRef.current = true;
   };
   const onPointerMove = (e: React.PointerEvent) => {
-    const el = trackRef.current;
-    if (!el || !drag.current.dragging) return;
-    el.scrollLeft = drag.current.startScroll - (e.clientX - drag.current.startX);
+    if (!drag.current.dragging) return;
+    posRef.current = drag.current.startPos - (e.clientX - drag.current.startX);
   };
   const endDrag = () => {
     if (!drag.current.dragging) return;
@@ -251,54 +257,56 @@ export default function Testimonials() {
           />
 
           <div
-            ref={trackRef}
+            ref={containerRef}
             onWheel={onWheel}
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={endDrag}
             onPointerLeave={endDrag}
-            className="no-scrollbar flex cursor-grab items-start gap-4 overflow-x-auto px-6 pb-4 active:cursor-grabbing md:mx-auto md:max-w-6xl"
+            className="touch-pan-y cursor-grab overflow-hidden px-6 pb-4 active:cursor-grabbing md:mx-auto md:max-w-6xl"
           >
-            {REVIEWS.map((r, i) => {
-              const photo = reviewPhotos[(i % REAL_REVIEWS.length) + 1];
-              return (
-                <article
-                  key={i}
-                  className="glass-card flex w-[210px] shrink-0 select-none flex-col overflow-hidden rounded-2xl md:w-[240px]"
-                >
-                  <div className="relative">
-                    {photo ? (
-                      <img
-                        src={photo}
-                        alt={r.org}
-                        className="aspect-[4/3] w-full object-cover"
-                      />
-                    ) : (
-                      <div className="flex aspect-[4/3] items-center justify-center gap-1 bg-ivory-deep/70 text-[11px] text-ink-soft">
-                        <Camera size={13} /> 사진 준비중
-                      </div>
-                    )}
-                    <span className="absolute left-2.5 top-2.5 rounded-full bg-white/85 px-2.5 py-0.5 text-[10px] font-semibold text-ink shadow-sm backdrop-blur">
-                      {r.org}
-                    </span>
-                  </div>
-                  <div className="flex flex-col p-4">
-                    <span className="text-[10px] font-semibold uppercase leading-none tracking-[0.1em] text-terracotta-deep">
-                      {r.topic}
-                    </span>
-                    <div className="mt-2 flex min-h-[122px] items-center">
-                      <p className="line-clamp-5 break-keep text-[13px] leading-[1.65] text-ink">
-                        <span className="mr-0.5 align-[-0.1em] font-serif text-lg text-terracotta/45">
-                          “
-                        </span>
-                        {r.quote}
-                        <span className="ml-0.5 font-serif text-lg text-terracotta/45">”</span>
-                      </p>
+            <div ref={trackRef} className="flex w-max items-start gap-4 will-change-transform">
+              {REVIEWS.map((r, i) => {
+                const photo = reviewPhotos[(i % REAL_REVIEWS.length) + 1];
+                return (
+                  <article
+                    key={i}
+                    className="glass-card flex w-[210px] shrink-0 select-none flex-col overflow-hidden rounded-2xl md:w-[240px]"
+                  >
+                    <div className="relative">
+                      {photo ? (
+                        <img
+                          src={photo}
+                          alt={r.org}
+                          className="aspect-[4/3] w-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex aspect-[4/3] items-center justify-center gap-1 bg-ivory-deep/70 text-[11px] text-ink-soft">
+                          <Camera size={13} /> 사진 준비중
+                        </div>
+                      )}
+                      <span className="absolute left-2.5 top-2.5 rounded-full bg-white/85 px-2.5 py-0.5 text-[10px] font-semibold text-ink shadow-sm backdrop-blur">
+                        {r.org}
+                      </span>
                     </div>
-                  </div>
-                </article>
-              );
-            })}
+                    <div className="flex flex-col p-4">
+                      <span className="text-[10px] font-semibold uppercase leading-none tracking-[0.1em] text-terracotta-deep">
+                        {r.topic}
+                      </span>
+                      <div className="mt-2 flex min-h-[122px] items-center">
+                        <p className="line-clamp-5 break-keep text-[13px] leading-[1.65] text-ink">
+                          <span className="mr-0.5 align-[-0.1em] font-serif text-lg text-terracotta/45">
+                            “
+                          </span>
+                          {r.quote}
+                          <span className="ml-0.5 font-serif text-lg text-terracotta/45">”</span>
+                        </p>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
           </div>
 
           <button
