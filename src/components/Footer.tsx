@@ -1,6 +1,4 @@
 export default function Footer() {
-  const year = new Date().getFullYear();
-
   return (
     <footer className="py-6">
       <div className="mx-auto max-w-6xl px-6">
@@ -34,7 +32,7 @@ export default function Footer() {
           </p>
         </div>
         <p className="mt-4 text-center text-[11px] text-ink-soft/70">
-          Copyright ⓒ {year} Oncoaching. All rights reserved.
+          Copyright ⓒ 2026 Oncoaching. All rights reserved.
         </p>
       </div>
     </footer>
