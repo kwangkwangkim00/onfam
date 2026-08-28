@@ -5,7 +5,7 @@ export default function Footer() {
         <div className="hairline mb-5" />
         <div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
           <p className="text-sm font-semibold text-ink">
-            On<span className="text-terracotta">가족코칭센터</span>
+            <span className="text-terracotta">On</span>가족코칭센터
           </p>
           <p className="text-xs text-ink-soft">
             대표강사 이덕림 ·{" "}

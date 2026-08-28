@@ -11,27 +11,27 @@ const EMAIL = "ejrfla21@kakao.com";
 const CHANNELS = [
   {
     icon: Newspaper,
-    label: "블로그",
+    label: "Blog",
     href: "https://blog.naver.com/duckkonni",
   },
   {
     icon: Camera,
-    label: "인스타그램",
+    label: "Instagram",
     href: "https://www.instagram.com/duck.onni",
   },
   {
     icon: PlaySquare,
-    label: "유튜브",
+    label: "YouTube",
     href: "https://youtube.com/@tv-im7so",
   },
   {
     icon: AtSign,
-    label: "쓰레드",
+    label: "Threads",
     href: "https://www.threads.com/@duck.onni",
   },
   {
     icon: Link2,
-    label: "링크트리",
+    label: "Linktree",
     href: "https://linktr.ee/oncoaching",
   },
 ];
@@ -80,9 +80,9 @@ export default function Contact() {
       <div className="mx-auto max-w-5xl px-6">
         <div className="grid items-stretch gap-6 md:grid-cols-[1fr_1.3fr]">
           <div className="flex flex-col gap-6">
-            <SectionReveal>
+            <SectionReveal className="text-center md:text-left">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-terracotta-deep">
-                섭외 · 문의
+                강연 · 코칭 · 교육
               </p>
               <h2 className="mt-3 text-balance text-3xl font-bold text-ink md:text-4xl">
                 언제든 편하게 문의하세요
@@ -107,7 +107,7 @@ export default function Contact() {
                       <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-terracotta/12 text-terracotta-deep transition-colors group-hover:bg-terracotta group-hover:text-ivory">
                         <Mail size={14} strokeWidth={2.2} />
                       </span>
-                      <span className="text-sm font-bold text-ink">이메일</span>
+                      <span className="text-sm font-bold text-ink">Email</span>
                     </button>
                     {emailCopied && (
                       <span className="absolute left-1/2 top-full z-10 mt-2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-ink px-3 py-1.5 text-xs font-medium text-ivory shadow-lg">

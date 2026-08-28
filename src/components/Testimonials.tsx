@@ -164,16 +164,25 @@ export default function Testimonials() {
 
     let raf = 0;
     let last = performance.now();
+    // 브라우저가 scrollLeft를 정수 픽셀로 반올림해버려서, 매 프레임 그 값을
+    // 다시 읽어 더하면 소수점 이동량이 씹히며 흔들려 보입니다. 그래서 실제
+    // 위치는 이 소수점 변수로만 추적하고, 화면에는 결과만 반영합니다.
+    let virtualLeft = el.scrollLeft;
 
     const tick = (now: number) => {
       const dt = now - last;
       last = now;
       if (!pausedRef.current && !drag.current.dragging) {
         const setWidth = el.scrollWidth / 2;
-        el.scrollLeft += AUTO_SPEED_PX_PER_MS * dt;
-        if (el.scrollLeft >= setWidth) {
-          el.scrollLeft -= setWidth;
+        virtualLeft += AUTO_SPEED_PX_PER_MS * dt;
+        if (virtualLeft >= setWidth) {
+          virtualLeft -= setWidth;
         }
+        el.scrollLeft = virtualLeft;
+      } else {
+        // 드래그/일시정지 중 사용자가 위치를 바꿨을 수 있으니 동기화해서,
+        // 자동 재생이 다시 시작될 때 갑자기 튀지 않게 합니다.
+        virtualLeft = el.scrollLeft;
       }
       raf = requestAnimationFrame(tick);
     };

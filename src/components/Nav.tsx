@@ -26,7 +26,7 @@ export default function Nav() {
     >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6">
         <a href="#top" className="font-semibold tracking-tight text-ink">
-          On<span className="text-terracotta">가족코칭센터</span>
+          <span className="text-terracotta">On</span>가족코칭센터
         </a>
 
         <nav className="hidden items-center gap-8 md:flex">
