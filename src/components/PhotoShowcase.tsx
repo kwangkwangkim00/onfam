@@ -45,12 +45,17 @@ export default function PhotoShowcase() {
   const timeoutRef = useRef<number | undefined>(undefined);
   const isFirstPaintRef = useRef(true);
 
-  // 모든 사진을 미리 내려받아둬서, 전환될 때 디코딩 때문에 끊기지 않게 합니다.
+  // 나머지 사진을 미리 내려받아둬서, 전환될 때 디코딩 때문에 끊기지 않게 합니다.
+  // 첫 번째 사진은 지금 화면에 바로 그려지는 중이라 대역폭을 나눠 갖지 않도록
+  // 잠깐 늦춰서 시작합니다(안 그러면 첫 화면이 오히려 더 느려집니다).
   useEffect(() => {
-    PHOTOS.forEach((p) => {
-      const img = new window.Image();
-      img.src = p.url;
-    });
+    const id = window.setTimeout(() => {
+      PHOTOS.slice(1).forEach((p) => {
+        const img = new window.Image();
+        img.src = p.url;
+      });
+    }, 1200);
+    return () => window.clearTimeout(id);
   }, []);
 
   useEffect(() => {
@@ -102,6 +107,7 @@ export default function PhotoShowcase() {
               key={current.url}
               src={current.url}
               alt={current.alt}
+              fetchPriority={index === 0 ? "high" : "auto"}
               initial={isFirstPaintRef.current ? false : { opacity: 0, scale: 1.04 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
