@@ -97,17 +97,17 @@ export default function Contact() {
             <SectionReveal delay={0.1} className="flex-1">
               <div className="glass-card flex h-full flex-col justify-center rounded-3xl p-8">
                 <h3 className="text-base font-bold text-ink">온라인에서도 만나요</h3>
-                <div className="mt-5 flex flex-wrap gap-2.5">
+                <div className="mt-5 grid grid-cols-3 gap-2">
                   <div className="relative">
                     <button
                       type="button"
                       onClick={handleCopyEmail}
-                      className="group flex items-center gap-2.5 rounded-full bg-ivory/70 py-2.5 pl-2.5 pr-4 transition-all hover:-translate-y-0.5 hover:bg-ivory"
+                      className="group flex w-full flex-col items-center gap-1.5 rounded-2xl bg-ivory/70 px-1 py-3 transition-all hover:-translate-y-0.5 hover:bg-ivory"
                     >
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-terracotta/12 text-terracotta-deep transition-colors group-hover:bg-terracotta group-hover:text-ivory">
-                        <Mail size={14} strokeWidth={2.2} />
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-terracotta/12 text-terracotta-deep transition-colors group-hover:bg-terracotta group-hover:text-ivory">
+                        <Mail size={15} strokeWidth={2.2} />
                       </span>
-                      <span className="text-sm font-bold text-ink">Email</span>
+                      <span className="text-xs font-bold text-ink">Email</span>
                     </button>
                     {emailCopied && (
                       <span className="absolute left-1/2 top-full z-10 mt-2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-ink px-3 py-1.5 text-xs font-medium text-ivory shadow-lg">
@@ -122,12 +122,12 @@ export default function Contact() {
                       href={href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex items-center gap-2.5 rounded-full bg-ivory/70 py-2.5 pl-2.5 pr-4 transition-all hover:-translate-y-0.5 hover:bg-ivory"
+                      className="group flex flex-col items-center gap-1.5 rounded-2xl bg-ivory/70 px-1 py-3 transition-all hover:-translate-y-0.5 hover:bg-ivory"
                     >
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-terracotta/12 text-terracotta-deep transition-colors group-hover:bg-terracotta group-hover:text-ivory">
-                        <Icon size={14} strokeWidth={2.2} />
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-terracotta/12 text-terracotta-deep transition-colors group-hover:bg-terracotta group-hover:text-ivory">
+                        <Icon size={15} strokeWidth={2.2} />
                       </span>
-                      <span className="text-sm font-bold text-ink">{label}</span>
+                      <span className="text-xs font-bold text-ink">{label}</span>
                     </a>
                   ))}
                 </div>
